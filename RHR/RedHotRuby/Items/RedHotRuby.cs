@@ -15,7 +15,7 @@ namespace RedHotRuby.Items
 
         public override string ItemPickupDesc => "A flaming ruby surrounds your body with warmth";
 
-        public override string ItemFullDescription => $"When you take fire damage, that damage will be reduced by <style=cIsUtility>{MainDamageReduced}</style> <style=cStack>+{AdditionalDamageReductionPerStack}</style>";
+        public override string ItemFullDescription => $"When you take fire damage,  <style=cIsUtility>{MainDamageReduced}</style> <style=cStack>+{AdditionalDamageReductionPerStack}</style>";
 
         public override string ItemLore => "These flaming rubies are mined from the depths of hell. Their horns grow out of them and if picked up they shockingly don't burn you but rather they help the user's body become acustom to scalding temperatures.";
 
@@ -41,8 +41,8 @@ namespace RedHotRuby.Items
 
         public override void CreateConfig(ConfigFile config)
         {
-            MainDamageReduced = config.Bind<float>("Item: " + ItemName, "Main Damage Reduction", 150f, "How much damage reduction should the item do?").Value;
-            AdditionalDamageReductionPerStack = config.Bind<float>("Item: " + ItemName, "Increase to Damage Reduction per stack", 100f, "How much should the reduction increase by per additional stack?").Value;
+            MainDamageReduced = config.Bind<float>("Item: " + ItemName, "Main Damage Reduction", 10f, "How much damage reduction should the item do?").Value;
+            AdditionalDamageReductionPerStack = config.Bind<float>("Item: " + ItemName, "Increase to Damage Reduction per stack", 6f, "How much should the reduction increase by per additional stack?").Value;
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -68,7 +68,21 @@ namespace RedHotRuby.Items
 
         public override void Hooks()
         {
+            On.RoR2.HealthComponent.TakeDamage += GetDamage;
+        }
 
+        private void GetDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, RoR2.HealthComponent self, RoR2.DamageInfo damageInfo)
+        {
+            if (!damageInfo.rejected || damageInfo == null)
+            {
+                var inventoryCount = GetCount(self.body);
+                if (damageInfo.inflictor) && inventoryCount > 0)
+                {
+                    Chat.AddMessage("Hit by fire damage");
+                }
+            }
+
+            orig(self, damageInfo);
         }
     }
 }

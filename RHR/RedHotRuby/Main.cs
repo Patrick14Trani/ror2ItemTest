@@ -40,8 +40,8 @@ namespace RedHotRuby
                 MainAssets = AssetBundle.LoadFromStream(stream);
             }
 
-            /*This section automatically scans the project for all artifacts
-            var ArtifactTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(ArtifactBase)));
+            //This section automatically scans the project for all artifacts
+            /*var ArtifactTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(ArtifactBase)));
 
             foreach (var artifactType in ArtifactTypes)
             {
@@ -50,7 +50,7 @@ namespace RedHotRuby
                 {
                     artifact.Init(Config);
                 }
-            }
+            }*/
 
             //This section automatically scans the project for all items
             var ItemTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(ItemBase)));
@@ -62,7 +62,7 @@ namespace RedHotRuby
                 {
                     item.Init(Config);
                 }
-            }*/
+            }
 
             /*this section automatically scans the project for all equipment
             var EquipmentTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(EquipmentBase)));
