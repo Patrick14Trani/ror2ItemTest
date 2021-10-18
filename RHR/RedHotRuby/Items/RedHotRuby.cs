@@ -6,6 +6,7 @@ using static RedHotRuby.Main;
 using static RedHotRuby.Utils.ItemHelpers;
 
 using RoR2.Projectile;
+using UnityEngine.Networking;
 
 namespace RedHotRuby.Items
 {
@@ -31,8 +32,8 @@ namespace RedHotRuby.Items
         public float FireBallCount = 10;
         public float AdditionalFireballsPerStack = 5;
         public float charge = 0;
-        public float chargeDamage;
-        public float chargeDamageIncreasePerStack;
+        public float chargeDamage = 50f;
+        public float chargeDamageIncreasePerStack = .03f;
 
         public static GameObject ItemBodyModelPrefab;
         public static GameObject RubyProjectile;
@@ -55,9 +56,19 @@ namespace RedHotRuby.Items
         public void CreateCharge()
         {
             RubyProjectile = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/Projectiles/FireBall"), "RubyProjectile");
+            var model = MainAssets.LoadAsset<GameObject>("RedHotRuby.prefab");
+            model.AddComponent<NetworkIdentity>();
+            model.AddComponent<ProjectileGhostController>();
+
+            RubyProjectile.GetComponent<TeamFilter>().teamIndex = TeamIndex.Player;
+
             var damage = RubyProjectile.GetComponent<ProjectileDamage>();
-            damage.damageType = DamageType.AOE;
+            damage.damageType = DamageType.Generic;
             damage.damage = 0;
+
+            var applyTorqueOnStart = RubyProjectile.AddComponent<ApplyTorqueOnStart>();
+            applyTorqueOnStart.localTorque = new Vector3(0, 1500, 0);
+
 
             if (RubyProjectile) PrefabAPI.RegisterNetworkPrefab(RubyProjectile);
             ProjectileAPI.Add(RubyProjectile);
@@ -112,18 +123,19 @@ namespace RedHotRuby.Items
                         if(charge >= 10)
                         {
                             Chat.AddMessage("Boom");
-                            var chosenPosition = Vector3.forward;
+                            //var chosenPosition = Vector3.forward;
                             FireProjectileInfo fireProjInfo = new FireProjectileInfo()
                             {
+                                owner = self.GetComponent<CharacterBody>().gameObject,
                                 projectilePrefab = RubyProjectile,
-                                owner = self.gameObject,
                                 damage = chargeDamage + (chargeDamageIncreasePerStack * (inventoryCount - 1)),
-                                position = chosenPosition,
-                                damageTypeOverride = null,
-                                procChainMask = default
+                                //position = chosenPosition,
+                                //damageTypeOverride = null,
+                                //procChainMask = default
                             };
 
                             ProjectileManager.instance.FireProjectile(fireProjInfo);
+                            charge = 0;
                         }
                     }
                 }

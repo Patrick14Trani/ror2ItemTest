@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 188369837
+CRC: 2725828017
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 0c319d8f22950a04fa86a3f547549a03
+    Hash: 925a15b344bc22edac4fbfe606106f39
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 21747e4ee48f36c7a65f9afbfd77f392
+    Hash: 44a728d1a6e6f6bb9c5c6c6436e01ed2
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -25,10 +25,15 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 48
   Script: {instanceID: 0}
+- Class: 108
+  Script: {instanceID: 0}
 - Class: 213
   Script: {instanceID: 0}
 Assets:
 - Assets/Models/Prefabs/Item/FirstItem/RubySkin.mat
+- Assets/Models/Prefabs/Item/OldShield/OldShield.prefab
+- Assets/Models/Prefabs/Item/OldShield/holder.mat
 - Assets/Models/Prefabs/Item/FirstItem/RedHotRuby.prefab
 - Assets/Textures/Icons/Item/FirstItem/RHRIcon.png
+- Assets/Textures/Icons/Item/FirstItem/oldshieldicon.png
 Dependencies: []
