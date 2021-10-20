@@ -90,7 +90,7 @@ namespace RedHotRuby.Items
                     childName = "Chest",
                     localPos = new Vector3(1f, .6f, -.2f),
                     localAngles = new Vector3(0,0,0),
-                    localScale = new Vector3(20,20,20)
+                    localScale = new Vector3(50,50,50)
                 }
             });
             return rules;
@@ -114,7 +114,7 @@ namespace RedHotRuby.Items
                     Chat.AddMessage($"Inflictor : {damageInfo.inflictor.tag}");
                     Chat.AddMessage($"Inflictor : {damageInfo.inflictor.name}");
 
-                    if (damageInfo.inflictor.name == "Fireball(Clone)")
+                    if (damageInfo.attacker.name == "Fireball(Clone)")
                     {
                         //particle effect?
                         Chat.AddMessage("Item Worked");
@@ -123,15 +123,14 @@ namespace RedHotRuby.Items
                         if(charge >= 10)
                         {
                             Chat.AddMessage("Boom");
-                            //var chosenPosition = Vector3.forward;
+                            var chosenPosition = self.GetComponentInParent<CharacterBody>().transform.position;
                             FireProjectileInfo fireProjInfo = new FireProjectileInfo()
                             {
                                 owner = self.GetComponent<CharacterBody>().gameObject,
                                 projectilePrefab = RubyProjectile,
                                 damage = chargeDamage + (chargeDamageIncreasePerStack * (inventoryCount - 1)),
-                                //position = chosenPosition,
-                                //damageTypeOverride = null,
-                                //procChainMask = default
+                                position = chosenPosition,
+                                damageTypeOverride = null
                             };
 
                             ProjectileManager.instance.FireProjectile(fireProjInfo);

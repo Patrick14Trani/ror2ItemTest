@@ -46,7 +46,7 @@ namespace RedHotRuby.Items
         public override void CreateConfig(ConfigFile config)
         {
             DamageReduced = config.Bind<float>("Item: " + ItemName, "Initial percentage of damage reduced", 10f, "What percent should it be reduced by?").Value;
-            PerStack = config.Bind<float>("Item: " + ItemName, "Increased percentage reduced per stack", 6f, "How many fireballs should be fired off?").Value;
+            PerStack = config.Bind<float>("Item: " + ItemName, "Increased percentage reduced per stack", 10f, "How many fireballs should be fired off?").Value;
         }
 
 
@@ -63,9 +63,9 @@ namespace RedHotRuby.Items
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemBodyModelPrefab,
                     childName = "Chest",
-                    localPos = new Vector3(1f, 1, -2),
-                    localAngles = new Vector3(0,0,0),
-                    localScale = new Vector3(.1f,.1f,.1f)
+                    localPos = new Vector3(0f, 0, -0.5f),
+                    localAngles = new Vector3(0,-90,0),
+                    localScale = new Vector3(.05f,.05f,.05f)
                 }
             });
             return rules;
@@ -81,17 +81,23 @@ namespace RedHotRuby.Items
             
             if (!damageInfo.rejected || damageInfo == null)
             {
-                var inventoryCount = GetCount(self.body);
-                if (inventoryCount > 0)
+                if (!damageInfo.damageType.Equals(DamageType.FallDamage))
                 {
-                    Chat.AddMessage($"{damageInfo.damage}"); //debug
-                    Chat.AddMessage($"{damageInfo.inflictor}"); //debug
-                   
-                    //we need a way to access the parent of the damage and check if they are an elite.
-                    if ()
+                    var inventoryCount = GetCount(self.body);
+                    if (inventoryCount > 0)
                     {
-                        damageInfo.damage = damageInfo.damage - (damageInfo.damage * (DamageReduced + (PerStack * (inventoryCount - 1)) / 100));
-                        Chat.AddMessage($"{damageInfo.damage}"); //debug
+                        //Chat.AddMessage($"{damageInfo.attacker}"); //debug
+                        if (damageInfo.attacker.GetComponent<CharacterBody>().isElite)
+                        {
+                            Chat.AddMessage($"{damageInfo.damage}"); //debug
+                            var dmg = damageInfo.damage - (DamageReduced + (PerStack * (inventoryCount - 1)));
+                            if (dmg <= 0)
+                            {
+                                dmg = 1;
+                            }
+                            damageInfo.damage = dmg;
+                            Chat.AddMessage($"{damageInfo.damage}"); //debug
+                        }
                     }
                 }
             }
