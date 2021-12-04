@@ -7,6 +7,7 @@ using static RedHotRuby.Utils.ItemHelpers;
 
 using RoR2.Projectile;
 using UnityEngine.Networking;
+using System;
 
 namespace RedHotRuby.Items
 {
@@ -16,10 +17,10 @@ namespace RedHotRuby.Items
 
         public override string ItemLangTokenName => "MOUNTAIN_CROWN";
 
-        public override string ItemPickupDesc => "Every teleporter will have shrin of the mountain activated.";
+        public override string ItemPickupDesc => "Every teleporter will have shrine of the mountain activated.";
 
-        public override string ItemFullDescription => $"Upon picking it up, the teleporter will receive {charge} charge of shrine of the mountain.";
-        public override string ItemLore => "Whoever left these shrines about must've had a king as well.";
+        public override string ItemFullDescription => $"Upon picking it up and reaching a new stage, the teleporter will receive a charge of shrine of the mountain.";
+        public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Lunar;
 
@@ -29,6 +30,7 @@ namespace RedHotRuby.Items
 
         //Following are the variables we'd like to use
         public int charge;
+        public int amount;
         public static GameObject ItemBodyModelPrefab;
 
         public override void Init(ConfigFile config)
@@ -42,6 +44,7 @@ namespace RedHotRuby.Items
         public override void CreateConfig(ConfigFile config)
         {
             charge = config.Bind<int>("Item: " + ItemName, "Initial amount of charges added", 1, "How many charges should it add?").Value;
+            amount = config.Bind<int>("Item: " + ItemName, "Number started with", 0, "How many should you start with?").Value;
         }
 
 
@@ -68,27 +71,57 @@ namespace RedHotRuby.Items
 
         public override void Hooks()
         {
-            //On.RoR2.SceneDirector.PopulateScene += PopulateScene;
-            //On.RoR2.CharacterBody.Awake += Awake;
-            //On.RoR2.PlayerCharacterMasterController.Awake += Awake;
-            On.RoR2.HealthComponent.OnInventoryChanged += OnInventoryChanged;
+            //On.RoR2.CharacterMaster.OnServerStageBegin += CharacterMaster_OnServerStageBegin;
+            On.RoR2.CharacterMaster.OnInventoryChanged += CharacterMaster_OnInventoryChanged;
+            On.RoR2.PlayerCharacterMasterController.OnBodyStart += PlayerCharacterMasterController_OnBodyStart;
+            //On.RoR2.CharacterMaster.SpawnBody += CharacterMaster_SpawnBody;
         }
 
-        /*private void PopulateScene(On.RoR2.SceneDirector.orig_PopulateScene orig, global::RoR2.SceneDirector self)
+        private void PlayerCharacterMasterController_OnBodyStart(On.RoR2.PlayerCharacterMasterController.orig_OnBodyStart orig, PlayerCharacterMasterController self)
         {
-            var inventoryCount = GetCount()
-            if()
-        }
-        */
-        private void OnInventoryChanged(On.RoR2.HealthComponent.orig_OnInventoryChanged orig, RoR2.HealthComponent self)
-        {
-            var inv = GetCount(self.body);
-            if(inv > 0)
+            try
             {
-               RoR2.TeleporterInteraction.AddShrineStack();
+                Chat.AddMessage($"Amount: {amount}");
+                if (amount > 0)
+                {
+                    for (int i = 0; i < amount; i++)
+                    {
+                        TeleporterInteraction.instance.AddShrineStack();
+                        Chat.AddMessage("<style=cWorldEvent>N'Kuhana has provided a challenge</style>");
+                    }
+                }
+                orig(self);
+            } catch (Exception e)
+            {
+                orig(self);
             }
         }
-        
+
+        private void CharacterMaster_OnInventoryChanged(On.RoR2.CharacterMaster.orig_OnInventoryChanged orig, CharacterMaster self)
+        {
+            var count = GetCount(self.GetBody());
+            if (count >= 1 && count > amount)
+            {
+                TeleporterInteraction.instance.AddShrineStack();
+                Chat.AddMessage("<style=cWorldEvent>N'Kuhana has provided a challenge</style>");
+                amount++;
+            }
+            orig(self);
+        }
+
+        private void CharacterMaster_OnServerStageBegin(On.RoR2.CharacterMaster.orig_OnServerStageBegin orig, CharacterMaster self, Stage stage)
+        {
+            orig(self, stage);
+            Chat.AddMessage($"Amount: {amount}");
+            if(amount > 0)
+            {
+                for (int i = 0; i < amount; i++)
+                {
+                    TeleporterInteraction.instance.AddShrineStack();
+                    Chat.AddMessage("<style=cWorldEvent>N'Kuhana has provided a challenge</style>");
+                }
+            }
+        }
     }
 
 }

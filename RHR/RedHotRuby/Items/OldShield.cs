@@ -4,6 +4,7 @@ using RoR2;
 using UnityEngine;
 using static RedHotRuby.Main;
 using static RedHotRuby.Utils.ItemHelpers;
+using System;
 
 using RoR2.Projectile;
 using UnityEngine.Networking;
@@ -20,7 +21,7 @@ namespace RedHotRuby.Items
 
         public override string ItemFullDescription => $"Old Shield reduces the amount of damage you receive from elites by <style=cIsUtility>{DamageReduced}%</style>. <style=cStack>{PerStack}%</style>:Per stack";
 
-        public override string ItemLore => "These flaming rubies are mined from the depths of hell. Their horns grow out of them and if picked up they shockingly don't burn you but rather they help the user's body become acustom to scalding temperatures.";
+        public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier2;
 
@@ -78,31 +79,36 @@ namespace RedHotRuby.Items
 
         private void TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, RoR2.HealthComponent self, RoR2.DamageInfo damageInfo)
         {
-            
-            if (!damageInfo.rejected || damageInfo == null)
-            {
-                if (!damageInfo.damageType.Equals(DamageType.FallDamage))
+            try {
+
+                if (!damageInfo.rejected || damageInfo == null)
                 {
-                    var inventoryCount = GetCount(self.body);
-                    if (inventoryCount > 0)
+                    if (!damageInfo.damageType.Equals(DamageType.FallDamage))
                     {
-                        //Chat.AddMessage($"{damageInfo.attacker}"); //debug
-                        if (damageInfo.attacker.GetComponent<CharacterBody>().isElite)
+                        var inventoryCount = GetCount(self.body);
+                        if (inventoryCount > 0)
                         {
-                            Chat.AddMessage($"{damageInfo.damage}"); //debug
-                            var dmg = damageInfo.damage - (DamageReduced + (PerStack * (inventoryCount - 1)));
-                            if (dmg <= 0)
+                            //Chat.AddMessage($"{damageInfo.attacker}"); //debug
+                            if (damageInfo.attacker.GetComponent<CharacterBody>().isElite)
                             {
-                                dmg = 1;
+                                Chat.AddMessage($"{damageInfo.damage}"); //debug
+                                var dmg = damageInfo.damage - (DamageReduced + (PerStack * (inventoryCount - 1)));
+                                if (dmg <= 0)
+                                {
+                                    dmg = 1;
+                                }
+                                damageInfo.damage = dmg;
+                                Chat.AddMessage($"{damageInfo.damage}"); //debug
                             }
-                            damageInfo.damage = dmg;
-                            Chat.AddMessage($"{damageInfo.damage}"); //debug
                         }
                     }
                 }
-            }
 
-            orig(self, damageInfo);
+                orig(self, damageInfo);
+            } catch (NullReferenceException e)
+            {
+                orig(self, damageInfo);
+            }
         }
     }
 }

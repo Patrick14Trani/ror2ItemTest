@@ -4,6 +4,7 @@ using RoR2;
 using UnityEngine;
 using static RedHotRuby.Main;
 using static RedHotRuby.Utils.ItemHelpers;
+using System;
 
 using RoR2.Projectile;
 using UnityEngine.Networking;
@@ -88,9 +89,9 @@ namespace RedHotRuby.Items
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemBodyModelPrefab,
                     childName = "Chest",
-                    localPos = new Vector3(1f, .6f, -.2f),
+                    localPos = new Vector3(.4f, .6f, -.2f),
                     localAngles = new Vector3(0,0,0),
-                    localScale = new Vector3(50,50,50)
+                    localScale = new Vector3(100000,100000,10000)
                 }
             });
             return rules;
@@ -103,44 +104,46 @@ namespace RedHotRuby.Items
 
         private void TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, RoR2.HealthComponent self, RoR2.DamageInfo damageInfo)
         {
-            if (!damageInfo.rejected || damageInfo == null)
+            try
             {
-                var inventoryCount = GetCount(self.body);
-                if (inventoryCount > 0)
+                if (!damageInfo.rejected || damageInfo == null)
                 {
-                    //Debug
-                    //Chat.AddMessage($"Damage Type: {damageInfo.damageType}");
-                    //Chat.AddMessage($"Inflictor : {damageInfo.inflictor}");
-                    Chat.AddMessage($"Inflictor : {damageInfo.inflictor.tag}");
-                    Chat.AddMessage($"Inflictor : {damageInfo.inflictor.name}");
-
-                    if (damageInfo.attacker.name == "Fireball(Clone)")
+                    var inventoryCount = GetCount(self.body);
+                    if (inventoryCount > 0)
                     {
-                        //particle effect?
-                        Chat.AddMessage("Item Worked");
-                        damageInfo.damage = 0f;
-                        charge += 1;
-                        if(charge >= 10)
-                        {
-                            Chat.AddMessage("Boom");
-                            var chosenPosition = self.GetComponentInParent<CharacterBody>().transform.position;
-                            FireProjectileInfo fireProjInfo = new FireProjectileInfo()
-                            {
-                                owner = self.GetComponent<CharacterBody>().gameObject,
-                                projectilePrefab = RubyProjectile,
-                                damage = chargeDamage + (chargeDamageIncreasePerStack * (inventoryCount - 1)),
-                                position = chosenPosition,
-                                damageTypeOverride = null
-                            };
 
-                            ProjectileManager.instance.FireProjectile(fireProjInfo);
-                            charge = 0;
+                        if (damageInfo.attacker.name == "Lumerian(Clone)")
+                        {
+                            //particle effect?
+                            Chat.AddMessage("Item Worked");
+                            damageInfo.damage = 0f;
+                            charge += 1;
+                            if (charge >= 10)
+                            {
+                                Chat.AddMessage("Boom");
+                                var chosenPosition = self.GetComponentInParent<CharacterBody>().transform.position;
+                                FireProjectileInfo fireProjInfo = new FireProjectileInfo()
+                                {
+                                    owner = self.GetComponent<CharacterBody>().gameObject,
+                                    projectilePrefab = RubyProjectile,
+                                    damage = chargeDamage + (chargeDamageIncreasePerStack * (inventoryCount - 1)),
+                                    position = chosenPosition,
+                                    damageTypeOverride = null
+                                };
+
+                                ProjectileManager.instance.FireProjectile(fireProjInfo);
+                                charge = 0;
+                            }
                         }
                     }
                 }
+                orig(self, damageInfo);
+            }catch(NullReferenceException e)
+            {
+                orig(self, damageInfo);
             }
 
-            orig(self, damageInfo);
+            
         }
     }
 }
