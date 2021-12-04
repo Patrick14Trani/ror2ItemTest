@@ -23,7 +23,7 @@ namespace RedHotRuby.Items
 
         public override string ItemLore => "These flaming rubies are mined from the depths of hell. Their horns grow out of them and if picked up they shockingly don't burn you but rather they help the user's body become acustom to scalding temperatures.";
 
-        public override ItemTier Tier => ItemTier.Tier2;
+        public override ItemTier Tier => ItemTier.Tier1;
 
         public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("RedHotRuby.prefab");
 
@@ -112,27 +112,12 @@ namespace RedHotRuby.Items
                     if (inventoryCount > 0)
                     {
 
-                        if (damageInfo.attacker.name == "Lumerian(Clone)")
+                        if (damageInfo.inflictor.name == "Fireball(Clone)")
                         {
-                            //particle effect?
-                            Chat.AddMessage("Item Worked");
-                            damageInfo.damage = 0f;
-                            charge += 1;
-                            if (charge >= 10)
+                            damageInfo.damage = damageInfo.damage - (damageInfo.damage / (damageInfo.damage + .05f * inventoryCount));
+                            if(damageInfo.damage < 1)
                             {
-                                Chat.AddMessage("Boom");
-                                var chosenPosition = self.GetComponentInParent<CharacterBody>().transform.position;
-                                FireProjectileInfo fireProjInfo = new FireProjectileInfo()
-                                {
-                                    owner = self.GetComponent<CharacterBody>().gameObject,
-                                    projectilePrefab = RubyProjectile,
-                                    damage = chargeDamage + (chargeDamageIncreasePerStack * (inventoryCount - 1)),
-                                    position = chosenPosition,
-                                    damageTypeOverride = null
-                                };
-
-                                ProjectileManager.instance.FireProjectile(fireProjInfo);
-                                charge = 0;
+                                damageInfo.damage = 1;
                             }
                         }
                     }
