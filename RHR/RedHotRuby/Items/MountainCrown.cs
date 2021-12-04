@@ -13,11 +13,11 @@ namespace RedHotRuby.Items
 {
     public class MountainCrown : ItemBase
     {
-        public override string ItemName => "Mountain Crown";
+        public override string ItemName => "N'Kuhana's Providence";
 
         public override string ItemLangTokenName => "MOUNTAIN_CROWN";
 
-        public override string ItemPickupDesc => "Every teleporter will have shrine of the mountain activated.";
+        public override string ItemPickupDesc => "This crown fills you with hope... and fear";
 
         public override string ItemFullDescription => $"Upon picking it up and reaching a new stage, the teleporter will receive a charge of shrine of the mountain.";
         public override string ItemLore => "";
@@ -71,10 +71,8 @@ namespace RedHotRuby.Items
 
         public override void Hooks()
         {
-            //On.RoR2.CharacterMaster.OnServerStageBegin += CharacterMaster_OnServerStageBegin;
             On.RoR2.CharacterMaster.OnInventoryChanged += CharacterMaster_OnInventoryChanged;
             On.RoR2.PlayerCharacterMasterController.OnBodyStart += PlayerCharacterMasterController_OnBodyStart;
-            //On.RoR2.CharacterMaster.SpawnBody += CharacterMaster_SpawnBody;
         }
 
         private void PlayerCharacterMasterController_OnBodyStart(On.RoR2.PlayerCharacterMasterController.orig_OnBodyStart orig, PlayerCharacterMasterController self)
@@ -84,10 +82,10 @@ namespace RedHotRuby.Items
                 Chat.AddMessage($"Amount: {amount}");
                 if (amount > 0)
                 {
+                    Chat.AddMessage("<style=cWorldEvent>N'Kuhana has provided a challenge</style>");
                     for (int i = 0; i < amount; i++)
                     {
                         TeleporterInteraction.instance.AddShrineStack();
-                        Chat.AddMessage("<style=cWorldEvent>N'Kuhana has provided a challenge</style>");
                     }
                 }
                 orig(self);
@@ -109,19 +107,6 @@ namespace RedHotRuby.Items
             orig(self);
         }
 
-        private void CharacterMaster_OnServerStageBegin(On.RoR2.CharacterMaster.orig_OnServerStageBegin orig, CharacterMaster self, Stage stage)
-        {
-            orig(self, stage);
-            Chat.AddMessage($"Amount: {amount}");
-            if(amount > 0)
-            {
-                for (int i = 0; i < amount; i++)
-                {
-                    TeleporterInteraction.instance.AddShrineStack();
-                    Chat.AddMessage("<style=cWorldEvent>N'Kuhana has provided a challenge</style>");
-                }
-            }
-        }
     }
 
 }

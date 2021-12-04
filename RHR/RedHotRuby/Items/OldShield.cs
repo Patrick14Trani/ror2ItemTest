@@ -17,7 +17,7 @@ namespace RedHotRuby.Items
 
         public override string ItemLangTokenName => "OLD_SHIELD";
 
-        public override string ItemPickupDesc => "Reduces the amount of damage taken from elites";
+        public override string ItemPickupDesc => "You feel your body protected from the elements of this world";
 
         public override string ItemFullDescription => $"Old Shield reduces the amount of damage you receive from elites by <style=cIsUtility>{DamageReduced}%</style>. <style=cStack>{PerStack}%</style>:Per stack";
 

@@ -13,13 +13,13 @@ namespace RedHotRuby.Items
 {
     public class RedHotRuby : ItemBase
     {
-        public override string ItemName => "Red Hot Ruby";
+        public override string ItemName => "The Crown Jewel";
 
         public override string ItemLangTokenName => "RED_HOT_RUBY";
 
         public override string ItemPickupDesc => "A flaming ruby surrounds your body with warmth";
 
-        public override string ItemFullDescription => $"This Item absorbs Lumerian Fireballs and stores them to be fired out at enemies.";
+        public override string ItemFullDescription => $"This item reduces damage from fireballs by 5%. +5% per stack";
 
         public override string ItemLore => "These flaming rubies are mined from the depths of hell. Their horns grow out of them and if picked up they shockingly don't burn you but rather they help the user's body become acustom to scalding temperatures.";
 
