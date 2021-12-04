@@ -1,8 +1,8 @@
 ﻿{
-	"name": "RedHotRuby",
+	"name": "Vestiges of the Old Queen",
 	"version_number": "1.0.0",
-	"website_url": "",
-	"description": "My first attempt at a mod. This one will add an object that protects from fire dmg",
+	"website_url": "https://github.com/Patrick14Trani/ror2ItemTest/",
+	"description": "Adds a common, uncommon, and lunar item",
 	"dependencies": [
 		"bbepis-BepInExPack-5.4.9",
 		"RiskofThunder-HookGenPatcher-1.2.1"
