@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1577770466
+CRC: 2670373434
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 167a770418d4f8c038313425d4ea46e5
+    Hash: b2a4733fca215674cdd33630bdd9e6c2
   TypeTreeHash:
     serializedVersion: 2
     Hash: fe90201f00cb4044086952b5a77fb08f
@@ -35,6 +35,7 @@ ClassTypes:
   Script: {instanceID: 0}
 Assets:
 - Assets/Models/Prefabs/Item/MountainCrown/mountainCrown.prefab
+- Assets/Models/Prefabs/Item/FirstItem/horns.mat
 - Assets/Models/Prefabs/Item/FirstItem/RubySkin.mat
 - Assets/Models/Prefabs/Item/OldShield/OldShield.prefab
 - Assets/Models/Prefabs/Item/OldShield/holder.mat

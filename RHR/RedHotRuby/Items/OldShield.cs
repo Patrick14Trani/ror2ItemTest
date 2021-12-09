@@ -91,14 +91,12 @@ namespace RedHotRuby.Items
                             //Chat.AddMessage($"{damageInfo.attacker}"); //debug
                             if (damageInfo.attacker.GetComponent<CharacterBody>().isElite)
                             {
-                                Chat.AddMessage($"{damageInfo.damage}"); //debug
                                 var dmg = damageInfo.damage - (DamageReduced + (PerStack * (inventoryCount - 1)));
                                 if (dmg <= 0)
                                 {
                                     dmg = 1;
                                 }
                                 damageInfo.damage = dmg;
-                                Chat.AddMessage($"{damageInfo.damage}"); //debug
                             }
                         }
                     }

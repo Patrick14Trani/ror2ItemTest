@@ -91,7 +91,7 @@ namespace RedHotRuby.Items
                     childName = "Chest",
                     localPos = new Vector3(.4f, .6f, -.2f),
                     localAngles = new Vector3(0,0,0),
-                    localScale = new Vector3(100000,100000,10000)
+                    localScale = new Vector3(1,1,1)
                 }
             });
             return rules;

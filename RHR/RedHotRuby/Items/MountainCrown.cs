@@ -79,7 +79,6 @@ namespace RedHotRuby.Items
         {
             try
             {
-                Chat.AddMessage($"Amount: {amount}");
                 if (amount > 0)
                 {
                     Chat.AddMessage("<style=cWorldEvent>N'Kuhana has provided a challenge</style>");
