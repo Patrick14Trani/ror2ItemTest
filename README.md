@@ -1,2 +1,7 @@
-# ror2ItemTest
-This will be a quick test to see if I can create an item or items for Risk of Rain 2.
+# Vestiges of the Old Queen
+[Demo](https://youtu.be/wVAetIBy6LQ)
+
+Implements three items:
+- N'kuhana's Providence (Lunar)
+- The Crown Jewel (Common)
+- The Old Shield (Uncommon)
